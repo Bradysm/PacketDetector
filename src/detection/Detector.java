@@ -1,5 +1,7 @@
 package detection;
 
+import java.util.HashMap;
+
 /**
  * Class used to detect whether a packet is valid and on the white list.
  * 
@@ -43,4 +45,58 @@ public final class Detector {
         // check if on white list
         return whitelist.determineValidity(packet);
     }
+    
+    
+    
+    /**
+     * This class is used to create a white list of valid data
+     * commands and headers. It is used as inner class for security
+     * reasons so attackers cannot try to create a class to mimic 
+     * a Detector object
+     * 
+     * @author Brady Murphy (bradysm)
+     * @version Jun 19, 2018
+     */
+    private class Whitelist {
+        /**
+         * hash map is used to provided constant time
+         */
+        private HashMap<String, Packet> wl;
+
+
+        /**
+         * constructor used to create a white list
+         */
+        public Whitelist() {
+            wl = new HashMap<String, Packet>();
+        }
+
+
+        /**
+         * adds a packet to the white list
+         * 
+         * @param packet
+         *            CCSDS packet
+         */
+        public void addToList(Packet packet) {
+            wl.put(packet.getPacketID(), packet);
+        }
+
+
+        /**
+         * this method is used to determine if a packet is valid on the white list
+         * A boolean value will be returned representing its validity
+         * 
+         * @param packet
+         *            CCSDS command packet
+         * @return boolean value, true if valid
+         */
+        public boolean determineValidity(Packet packet) {
+            Packet result = wl.get(packet.getPacketID());
+            return (result != null) ? true : false;
+
+        }
+
+    }
+
 }
